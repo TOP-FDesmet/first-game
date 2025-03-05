@@ -74,7 +74,7 @@ public class Game1 : Game
         {
             JoystickState jstate = Joystick.GetState((int)PlayerIndex.One);
 
-            if (jstate.Axes[1] < deadZone)
+            if (jstate.Axes[1] < -deadZone)
             {
                 ballPosition.Y -= updateBallSpeed;
             }
@@ -82,7 +82,7 @@ public class Game1 : Game
             {
                 ballPosition.Y += updateBallSpeed;
             }
-            if (jstate.Axes[0] < deadZone)
+            if (jstate.Axes[0] < -deadZone)
             {
                 ballPosition.X -= updateBallSpeed;
             }
@@ -90,6 +90,24 @@ public class Game1 : Game
             {
                 ballPosition.X += updateBallSpeed;
             }
+        }
+
+        if (ballPosition.X > _graphics.PreferredBackBufferWidth - ballTexture.Width / 2)
+        {
+            ballPosition.X = _graphics.PreferredBackBufferWidth - ballTexture.Width / 2;
+        }
+        else if (ballPosition.X < ballTexture.Width / 2)
+        {
+            ballPosition.X = ballTexture.Width / 2;
+        }
+
+        if (ballPosition.Y > _graphics.PreferredBackBufferHeight - ballTexture.Height / 2)
+        {
+            ballPosition.Y = _graphics.PreferredBackBufferHeight - ballTexture.Height / 2;
+        }
+        else if (ballPosition.Y < ballTexture.Height / 2)
+        {
+            ballPosition.Y = ballTexture.Height / 2;
         }
 
         base.Update(gameTime);
