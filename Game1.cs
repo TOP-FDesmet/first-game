@@ -22,6 +22,9 @@ public class Game1 : Game
     protected override void Initialize()
     {
         // TODO: Add your initialization logic here
+        hero = new(
+            _graphics.PreferredBackBufferWidth / 2,
+            _graphics.PreferredBackBufferHeight / 2);
 
         base.Initialize();
     }
@@ -31,10 +34,7 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         // TODO: use this.Content to load your game content here
-        hero = new(
-            Content.Load<Texture2D>("ball"),
-            _graphics.PreferredBackBufferWidth / 2,
-            _graphics.PreferredBackBufferHeight / 2);
+        hero.Load(Content, "Player_idle");
     }
 
     protected override void Update(GameTime gameTime)

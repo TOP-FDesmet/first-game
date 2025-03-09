@@ -10,14 +10,13 @@ public abstract class Sprite : ISprite
   public float PositionY { get; set; }
   public Vector2 Position { get; protected set; }
 
-  public Sprite(Texture2D texture, float positionX, float positionY)
+  public Sprite(float positionX, float positionY)
   {
-    Texture = texture;
     PositionX = positionX;
     PositionY = positionY;
   }
 
-  public void Draw(SpriteBatch spriteBatch)
+  public virtual void Draw(SpriteBatch spriteBatch)
   {
     spriteBatch.Draw(
             Texture,
