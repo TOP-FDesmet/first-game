@@ -5,70 +5,69 @@ using Microsoft.Xna.Framework.Input;
 
 namespace FirstGame.Characters;
 
-public class Hero : Sprite
+public class Hero : IAnimatedSprite
 {
+  private Vector2 position;
   private float Speed { get; set; }
+  public Texture2D Texture { get; set; }
+  public float PositionX { get; set; }
+  public float PositionY { get; set; }
+  public int FrameCount { get; set; }
+  public float TimePerFrame { get; set; }
+  public int Frame { get; set; }
+  public float TotalElapsed { get; set; }
   private int deadZone;
-  private int frameCount;
-  private float timePerFrame;
-  private int frame;
-  private float totalElapsed;
-  public float Rotation, Scale, Depth;
-  public Vector2 Origin;
 
-  public Hero(float positionX, float positionY, Vector2 origin, float rotation, float scale, float depth)
-    : base(positionX, positionY)
+  public Hero(float positionX, float positionY)
   {
-    Position = new(positionX, positionY);
+    position = new(positionX, positionY);
     Speed = 100f;
     deadZone = 4096;
-    Origin = origin;
-    Rotation = rotation;
-    Scale = scale;
-    Depth = depth;
   }
 
-  public void Load(ContentManager content, string sprite, int frameCount, int framePerSeconde)
+  public void Load(ContentManager content, string sprite)
   {
-    this.frameCount = frameCount;
+    int framePerSeconde = 6;
+
+    FrameCount = 6;
     Texture = content.Load<Texture2D>(sprite);
-    timePerFrame = (float)1 / framePerSeconde;
+    TimePerFrame = (float)1 / framePerSeconde;
+    Frame = 0;
+    TotalElapsed = 0;
   }
 
-  public void Update(float elapsed)
+  public void UpdateFrame(float elapsed)
   {
-    totalElapsed += elapsed;
-    if (totalElapsed > timePerFrame)
+    TotalElapsed += elapsed;
+    if (TotalElapsed > TimePerFrame)
     {
-      frame++;
-      frame %= frameCount;
-      totalElapsed -= timePerFrame;
+      Frame++;
+      Frame %= FrameCount;
+      TotalElapsed -= TimePerFrame;
     }
   }
 
-  public void Move(GameTime gameTime, GraphicsDeviceManager graphics)
+  public void Move(float elapsed, GraphicsDeviceManager graphics)
   {
-    float updateSpeed = Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+    float updateSpeed = Speed * elapsed;
 
     var kstate = Keyboard.GetState();
 
-    Vector2 newPosition = Position;
-
     if (kstate.IsKeyDown(Keys.Up))
     {
-      newPosition.Y -= updateSpeed;
+      position.Y -= updateSpeed;
     }
     if (kstate.IsKeyDown(Keys.Down))
     {
-      newPosition.Y += updateSpeed;
+      position.Y += updateSpeed;
     }
     if (kstate.IsKeyDown(Keys.Left))
     {
-      newPosition.X -= updateSpeed;
+      position.X -= updateSpeed;
     }
     if (kstate.IsKeyDown(Keys.Right))
     {
-      newPosition.X += updateSpeed;
+      position.X += updateSpeed;
     }
 
     if (Joystick.LastConnectedIndex == 0)
@@ -77,47 +76,54 @@ public class Hero : Sprite
 
       if (jstate.Axes[1] < -deadZone)
       {
-        newPosition.Y -= updateSpeed;
+        position.Y -= updateSpeed;
       }
       if (jstate.Axes[1] > deadZone)
       {
-        newPosition.Y += updateSpeed;
+        position.Y += updateSpeed;
       }
       if (jstate.Axes[0] < -deadZone)
       {
-        newPosition.X -= updateSpeed;
+        position.X -= updateSpeed;
       }
       if (jstate.Axes[0] > deadZone)
       {
-        newPosition.X += updateSpeed;
+        position.X += updateSpeed;
       }
     }
 
-    if (newPosition.X > graphics.PreferredBackBufferWidth - Texture.Width / 2)
+    if (position.X > graphics.PreferredBackBufferWidth - Texture.Width / 2)
     {
-      newPosition.X = graphics.PreferredBackBufferWidth - Texture.Width / 2;
+      position.X = graphics.PreferredBackBufferWidth - Texture.Width / 2;
     }
-    else if (newPosition.X < Texture.Width / 2)
+    else if (position.X < Texture.Width / 2)
     {
-      newPosition.X = Texture.Width / 2;
-    }
-
-    if (newPosition.Y > graphics.PreferredBackBufferHeight - Texture.Height / 2)
-    {
-      newPosition.Y = graphics.PreferredBackBufferHeight - Texture.Height / 2;
-    }
-    else if (newPosition.Y < Texture.Height / 2)
-    {
-      newPosition.Y = Texture.Height / 2;
+      position.X = Texture.Width / 2;
     }
 
-    Position = newPosition;
+    if (position.Y > graphics.PreferredBackBufferHeight - Texture.Height / 2)
+    {
+      position.Y = graphics.PreferredBackBufferHeight - Texture.Height / 2;
+    }
+    else if (position.Y < Texture.Height / 2)
+    {
+      position.Y = Texture.Height / 2;
+    }
   }
 
-
-  public override void Draw(SpriteBatch spriteBatch)
+  public void Draw(SpriteBatch spriteBatch)
   {
-
+    int frameWidth = Texture.Width / FrameCount;
+    Rectangle sourceRect = new(frameWidth * Frame, 0, frameWidth, Texture.Height);
+    spriteBatch.Draw(
+      Texture,
+      position,
+      sourceRect,
+      Color.White,
+      0f,
+      Vector2.Zero,
+      0f,
+      SpriteEffects.None,
+      0f);
   }
-
 }

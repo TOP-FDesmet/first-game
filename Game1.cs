@@ -43,7 +43,9 @@ public class Game1 : Game
             Exit();
 
         // TODO: Add your update logic here
-        hero.Move(gameTime, _graphics);
+        float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        hero.UpdateFrame(elapsed);
+        hero.Move(elapsed, _graphics);
 
         base.Update(gameTime);
     }

@@ -8,5 +8,4 @@ public interface ISprite
   public float PositionX { get; set; }
   public float PositionY { get; set; }
 
-  public void Draw(SpriteBatch spriteBatch);
 }
