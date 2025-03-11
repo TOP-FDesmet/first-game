@@ -1,4 +1,3 @@
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -6,80 +5,50 @@ using Microsoft.Xna.Framework.Input;
 
 namespace FirstGame.Characters;
 
-public class Hero : IAnimatedSprite
+public class Hero : AnimatedSprite
 {
-  private Vector2 position;
-  private float Speed { get; set; }
-  public Texture2D Texture { get; set; }
-  public float PositionX { get; set; }
-  public float PositionY { get; set; }
+  private const float speed = 100f;
+  private SpriteEffects flip;
+  private const int deadZone = 4076;
 
-  public int FrameCount { get; set; }
-  public float TimePerFrame { get; set; }
-  public int Frame { get; set; }
-  public float TotalElapsed { get; set; }
-  public float Rotation { get; set; }
-  public float Scale { get; set; }
-  public float Depth { get; set; }
-  public Vector2 Origin { get; set; }
-  public bool flip = false;
-
-  private int deadZone;
-
-  public Hero(float positionX, float positionY, Vector2 origin, float rotation, float scale, float depth)
+  public Hero(Vector2 position)
+    : base(position)
   {
-    position = new(positionX, positionY);
-    Speed = 100f;
-    deadZone = 4096;
-    Origin = origin;
-    Rotation = rotation;
-    Scale = scale;
-    Depth = depth;
-  }
-
-  public void Load(ContentManager content, string asset, int frameCount, int framesPerSec)
-  {
-    FrameCount = frameCount;
-    Texture = content.Load<Texture2D>(asset);
-    TimePerFrame = (float)1 / framesPerSec;
+    FrameCount = 6;
+    TimePerFrame = (float)1 / 8;
     Frame = 0;
     TotalElapsed = 0;
   }
 
-  public void UpdateFrame(float elapsed)
+  public override void Load(ContentManager content)
   {
-    TotalElapsed += elapsed;
-    if (TotalElapsed > TimePerFrame)
-    {
-      Frame++;
-      Frame %= FrameCount;
-      TotalElapsed -= TimePerFrame;
-    }
+    Texture = content.Load<Texture2D>("Player_idle");
+    flip = SpriteEffects.FlipHorizontally;
   }
 
   public void Move(float elapsed, GraphicsDeviceManager graphics)
   {
-    float updateSpeed = Speed * elapsed;
+    float updateSpeed = speed * elapsed;
 
     var kstate = Keyboard.GetState();
 
     if (kstate.IsKeyDown(Keys.Up))
     {
-      position.Y -= updateSpeed;
+      Position = new Vector2(Position.X, Position.Y - updateSpeed);
     }
     if (kstate.IsKeyDown(Keys.Down))
     {
-      position.Y += updateSpeed;
+      Position = new Vector2(Position.X, Position.Y + updateSpeed);
     }
     if (kstate.IsKeyDown(Keys.Left))
     {
-      flip = false;
-      position.X -= updateSpeed;
+      flip = SpriteEffects.None;
+      Position = new Vector2(Position.X - updateSpeed, Position.Y);
     }
     if (kstate.IsKeyDown(Keys.Right))
     {
-      flip = true;
-      position.X += updateSpeed;
+      flip = SpriteEffects.FlipHorizontally;
+      Position = new Vector2(Position.X + updateSpeed, Position.Y);
     }
 
     if (Joystick.LastConnectedIndex == 0)
@@ -88,70 +57,54 @@ public class Hero : IAnimatedSprite
 
       if (jstate.Axes[1] < -deadZone)
       {
-        position.Y -= updateSpeed;
+        Position = new Vector2(Position.X, Position.Y - updateSpeed);
       }
       if (jstate.Axes[1] > deadZone)
       {
-        position.Y += updateSpeed;
+        Position = new Vector2(Position.X, Position.Y + updateSpeed);
       }
       if (jstate.Axes[0] < -deadZone)
       {
-        position.X -= updateSpeed;
+        Position = new Vector2(Position.X - updateSpeed, Position.Y);
       }
       if (jstate.Axes[0] > deadZone)
       {
-        position.X += updateSpeed;
+        Position = new Vector2(Position.X + updateSpeed, Position.Y);
       }
     }
 
-    if (position.X > graphics.PreferredBackBufferWidth - Texture.Width / 2)
+    if (Position.X > graphics.PreferredBackBufferWidth - Texture.Width / 2)
     {
-      position.X = graphics.PreferredBackBufferWidth - Texture.Width / 2;
+      Position = new Vector2(graphics.PreferredBackBufferWidth - Texture.Width / 2, Position.Y);
     }
-    else if (position.X < Texture.Width / 2)
+    else if (Position.X < Texture.Width / 2)
     {
-      position.X = Texture.Width / 2;
+      Position = new Vector2(Texture.Width / 2, Position.Y);
     }
 
-    if (position.Y > graphics.PreferredBackBufferHeight - Texture.Height / 2)
+    if (Position.Y > graphics.PreferredBackBufferHeight - Texture.Height / 2)
     {
-      position.Y = graphics.PreferredBackBufferHeight - Texture.Height / 2;
+      Position = new Vector2(Position.X, graphics.PreferredBackBufferHeight - Texture.Height / 2);
     }
-    else if (position.Y < Texture.Height / 2)
+    else if (Position.Y < Texture.Height / 2)
     {
-      position.Y = Texture.Height / 2;
+      Position = new Vector2(Position.X, Texture.Height / 2);
     }
   }
 
-  public void DrawFrame(SpriteBatch spriteBatch)
+  public override void DrawFrame(SpriteBatch spriteBatch)
   {
     int frameWidth = Texture.Width / FrameCount;
     Rectangle sourceRect = new(frameWidth * Frame, 0, frameWidth, Texture.Height);
-    if (flip)
-    {
-      spriteBatch.Draw(
-            Texture,
-            position,
-            sourceRect,
-            Color.White,
-            Rotation,
-            new Vector2(sourceRect.Width / 2, sourceRect.Height / 2),
-            Scale,
-            SpriteEffects.FlipHorizontally,
-            Depth);
-
-      return;
-    }
     spriteBatch.Draw(
           Texture,
-          position,
+          Position,
           sourceRect,
           Color.White,
-          Rotation,
+          0.0f,
           new Vector2(sourceRect.Width / 2, sourceRect.Height / 2),
-          Scale,
-          SpriteEffects.None,
-          Depth);
-
+          1.0f,
+          flip,
+          0.0f);
   }
 }

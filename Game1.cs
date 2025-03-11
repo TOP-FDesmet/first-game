@@ -8,14 +8,6 @@ namespace FirstGame;
 public class Game1 : Game
 {
     private Hero hero;
-
-    private const float heroRotation = 0f;
-    private float heroScale = 1.0f;
-    private const float heroDepth = 0f;
-
-    private int heroFrames = 6;
-    private int heroFramesPerSec = 10;
-
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
@@ -29,13 +21,9 @@ public class Game1 : Game
     protected override void Initialize()
     {
         // TODO: Add your initialization logic here
-        hero = new(
+        hero = new(new Vector2(
             _graphics.PreferredBackBufferWidth / 2,
-            _graphics.PreferredBackBufferHeight / 2,
-            Vector2.Zero,
-            heroRotation,
-            heroScale,
-            heroDepth);
+            _graphics.PreferredBackBufferHeight / 2));
 
         base.Initialize();
     }
@@ -45,7 +33,7 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         // TODO: use this.Content to load your game content here
-        hero.Load(Content, "Player_idle", heroFrames, heroFramesPerSec);
+        hero.Load(Content);
     }
 
     protected override void Update(GameTime gameTime)
