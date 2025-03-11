@@ -9,9 +9,9 @@ public class Game1 : Game
 {
     private Hero hero;
 
-    private const float heroRotation = 0;
-    private const float heroScale = 2;
-    private const float heroDepth = 0.5f;
+    private const float heroRotation = 0f;
+    private float heroScale = 1.0f;
+    private const float heroDepth = 0f;
 
     private int heroFrames = 6;
     private int heroFramesPerSec = 10;

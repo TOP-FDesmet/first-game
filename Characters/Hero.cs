@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -21,6 +22,7 @@ public class Hero : IAnimatedSprite
   public float Scale { get; set; }
   public float Depth { get; set; }
   public Vector2 Origin { get; set; }
+  public bool flip = false;
 
   private int deadZone;
 
@@ -71,10 +73,12 @@ public class Hero : IAnimatedSprite
     }
     if (kstate.IsKeyDown(Keys.Left))
     {
+      flip = false;
       position.X -= updateSpeed;
     }
     if (kstate.IsKeyDown(Keys.Right))
     {
+      flip = true;
       position.X += updateSpeed;
     }
 
@@ -123,15 +127,31 @@ public class Hero : IAnimatedSprite
   {
     int frameWidth = Texture.Width / FrameCount;
     Rectangle sourceRect = new(frameWidth * Frame, 0, frameWidth, Texture.Height);
+    if (flip)
+    {
+      spriteBatch.Draw(
+            Texture,
+            position,
+            sourceRect,
+            Color.White,
+            Rotation,
+            new Vector2(sourceRect.Width / 2, sourceRect.Height / 2),
+            Scale,
+            SpriteEffects.FlipHorizontally,
+            Depth);
+
+      return;
+    }
     spriteBatch.Draw(
-      Texture,
-      position,
-      sourceRect,
-      Color.White,
-      Rotation,
-      Origin,
-      Scale,
-      SpriteEffects.None,
-      Depth);
+          Texture,
+          position,
+          sourceRect,
+          Color.White,
+          Rotation,
+          new Vector2(sourceRect.Width / 2, sourceRect.Height / 2),
+          Scale,
+          SpriteEffects.None,
+          Depth);
+
   }
 }
