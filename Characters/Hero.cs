@@ -12,26 +12,34 @@ public class Hero : IAnimatedSprite
   public Texture2D Texture { get; set; }
   public float PositionX { get; set; }
   public float PositionY { get; set; }
+
   public int FrameCount { get; set; }
   public float TimePerFrame { get; set; }
   public int Frame { get; set; }
   public float TotalElapsed { get; set; }
+  public float Rotation { get; set; }
+  public float Scale { get; set; }
+  public float Depth { get; set; }
+  public Vector2 Origin { get; set; }
+
   private int deadZone;
 
-  public Hero(float positionX, float positionY)
+  public Hero(float positionX, float positionY, Vector2 origin, float rotation, float scale, float depth)
   {
     position = new(positionX, positionY);
     Speed = 100f;
     deadZone = 4096;
+    Origin = origin;
+    Rotation = rotation;
+    Scale = scale;
+    Depth = depth;
   }
 
-  public void Load(ContentManager content, string sprite)
+  public void Load(ContentManager content, string asset, int frameCount, int framesPerSec)
   {
-    int framePerSeconde = 6;
-
-    FrameCount = 6;
-    Texture = content.Load<Texture2D>(sprite);
-    TimePerFrame = (float)1 / framePerSeconde;
+    FrameCount = frameCount;
+    Texture = content.Load<Texture2D>(asset);
+    TimePerFrame = (float)1 / framesPerSec;
     Frame = 0;
     TotalElapsed = 0;
   }
@@ -111,7 +119,7 @@ public class Hero : IAnimatedSprite
     }
   }
 
-  public void Draw(SpriteBatch spriteBatch)
+  public void DrawFrame(SpriteBatch spriteBatch)
   {
     int frameWidth = Texture.Width / FrameCount;
     Rectangle sourceRect = new(frameWidth * Frame, 0, frameWidth, Texture.Height);
@@ -120,10 +128,10 @@ public class Hero : IAnimatedSprite
       position,
       sourceRect,
       Color.White,
-      0f,
-      Vector2.Zero,
-      0f,
+      Rotation,
+      Origin,
+      Scale,
       SpriteEffects.None,
-      0f);
+      Depth);
   }
 }

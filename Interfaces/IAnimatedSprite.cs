@@ -9,7 +9,11 @@ public interface IAnimatedSprite : ISprite
   public float TimePerFrame { get; set; }
   public int Frame { get; set; }
   public float TotalElapsed { get; set; }
+  public float Rotation { get; set; }
+  public float Scale { get; set; }
+  public float Depth { get; set; }
+  public Vector2 Origin { get; set; }
 
   public void UpdateFrame(float elapsed);
-  public void Draw(SpriteBatch spriteBatch);
+  public void DrawFrame(SpriteBatch spriteBatch);
 }

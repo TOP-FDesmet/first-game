@@ -9,6 +9,13 @@ public class Game1 : Game
 {
     private Hero hero;
 
+    private const float heroRotation = 0;
+    private const float heroScale = 2;
+    private const float heroDepth = 0.5f;
+
+    private int heroFrames = 6;
+    private int heroFramesPerSec = 10;
+
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
@@ -24,7 +31,11 @@ public class Game1 : Game
         // TODO: Add your initialization logic here
         hero = new(
             _graphics.PreferredBackBufferWidth / 2,
-            _graphics.PreferredBackBufferHeight / 2);
+            _graphics.PreferredBackBufferHeight / 2,
+            Vector2.Zero,
+            heroRotation,
+            heroScale,
+            heroDepth);
 
         base.Initialize();
     }
@@ -34,7 +45,7 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         // TODO: use this.Content to load your game content here
-        hero.Load(Content, "Player_idle");
+        hero.Load(Content, "Player_idle", heroFrames, heroFramesPerSec);
     }
 
     protected override void Update(GameTime gameTime)
@@ -56,7 +67,7 @@ public class Game1 : Game
 
         // TODO: Add your drawing code here
         _spriteBatch.Begin();
-        hero.Draw(_spriteBatch);
+        hero.DrawFrame(_spriteBatch);
         _spriteBatch.End();
 
         base.Draw(gameTime);
