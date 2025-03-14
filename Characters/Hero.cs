@@ -5,28 +5,51 @@ using Microsoft.Xna.Framework.Input;
 
 namespace FirstGame.Characters;
 
-public class Hero : AnimatedSprite
+public class Hero
 {
+  private Vector2 Position { get; set; }
   private const float speed = 100f;
+
+  private int frame;
+  private int frameCount;
+  private float timePerFrame;
+  private float totalElapsed;
+
+  private AnimatedTexture animatedTexture;
+
   private SpriteEffects flip;
+  private bool heroMoves;
   private const int deadZone = 4076;
 
   public Hero(Vector2 position)
-    : base(position)
   {
-    FrameCount = 6;
-    TimePerFrame = (float)1 / 8;
-    Frame = 0;
-    TotalElapsed = 0;
+    Position = position;
+    frame = 0;
+    frameCount = 6;
+    heroMoves = false;
+    timePerFrame = (float)1 / 8;
+    totalElapsed = 0;
   }
 
-  public override void Load(ContentManager content)
+  public void Load(ContentManager content)
   {
-    Texture = content.Load<Texture2D>("Player_idle");
+    animatedTexture = new();
+    animatedTexture.LoadTexture(content, "Player_idle", frame, frameCount, timePerFrame, totalElapsed);
     flip = SpriteEffects.FlipHorizontally;
   }
 
-  public void Move(float elapsed, GraphicsDeviceManager graphics)
+  public void Update(GraphicsDeviceManager graphics, float elapsed)
+  {
+    animatedTexture.UpdateFrame(elapsed);
+    Move(graphics, elapsed);
+  }
+
+  public void Draw(SpriteBatch spriteBatch)
+  {
+    animatedTexture.DrawFrame(spriteBatch, Position, flip);
+  }
+
+  private void Move(GraphicsDeviceManager graphics, float elapsed)
   {
     float updateSpeed = speed * elapsed;
 
@@ -73,38 +96,22 @@ public class Hero : AnimatedSprite
       }
     }
 
-    if (Position.X > graphics.PreferredBackBufferWidth - Texture.Width / 2)
+    if (Position.X > graphics.PreferredBackBufferWidth - animatedTexture.Width / 2)
     {
-      Position = new Vector2(graphics.PreferredBackBufferWidth - Texture.Width / 2, Position.Y);
+      Position = new Vector2(graphics.PreferredBackBufferWidth - animatedTexture.Width / 2, Position.Y);
     }
-    else if (Position.X < Texture.Width / 2)
+    else if (Position.X < animatedTexture.Width / 2)
     {
-      Position = new Vector2(Texture.Width / 2, Position.Y);
+      Position = new Vector2(animatedTexture.Width / 2, Position.Y);
     }
 
-    if (Position.Y > graphics.PreferredBackBufferHeight - Texture.Height / 2)
+    if (Position.Y > graphics.PreferredBackBufferHeight - animatedTexture.Height / 2)
     {
-      Position = new Vector2(Position.X, graphics.PreferredBackBufferHeight - Texture.Height / 2);
+      Position = new Vector2(Position.X, graphics.PreferredBackBufferHeight - animatedTexture.Height / 2);
     }
-    else if (Position.Y < Texture.Height / 2)
+    else if (Position.Y < animatedTexture.Height / 2)
     {
-      Position = new Vector2(Position.X, Texture.Height / 2);
+      Position = new Vector2(Position.X, animatedTexture.Height / 2);
     }
-  }
-
-  public override void DrawFrame(SpriteBatch spriteBatch)
-  {
-    int frameWidth = Texture.Width / FrameCount;
-    Rectangle sourceRect = new(frameWidth * Frame, 0, frameWidth, Texture.Height);
-    spriteBatch.Draw(
-          Texture,
-          Position,
-          sourceRect,
-          Color.White,
-          0.0f,
-          new Vector2(sourceRect.Width / 2, sourceRect.Height / 2),
-          1.0f,
-          flip,
-          0.0f);
   }
 }

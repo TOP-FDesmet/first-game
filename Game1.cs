@@ -43,8 +43,7 @@ public class Game1 : Game
 
         // TODO: Add your update logic here
         float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        hero.UpdateFrame(elapsed);
-        hero.Move(elapsed, _graphics);
+        hero.Update(_graphics, elapsed);
 
         base.Update(gameTime);
     }
@@ -55,7 +54,7 @@ public class Game1 : Game
 
         // TODO: Add your drawing code here
         _spriteBatch.Begin();
-        hero.DrawFrame(_spriteBatch);
+        hero.Draw(_spriteBatch);
         _spriteBatch.End();
 
         base.Draw(gameTime);
