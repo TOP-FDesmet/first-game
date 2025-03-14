@@ -8,7 +8,6 @@ namespace FirstGame;
 public class Game1 : Game
 {
     private Hero hero;
-
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
@@ -22,6 +21,9 @@ public class Game1 : Game
     protected override void Initialize()
     {
         // TODO: Add your initialization logic here
+        hero = new(new Vector2(
+            _graphics.PreferredBackBufferWidth / 2,
+            _graphics.PreferredBackBufferHeight / 2));
 
         base.Initialize();
     }
@@ -31,10 +33,7 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         // TODO: use this.Content to load your game content here
-        hero = new(
-            Content.Load<Texture2D>("ball"),
-            _graphics.PreferredBackBufferWidth / 2,
-            _graphics.PreferredBackBufferHeight / 2);
+        hero.Load(Content);
     }
 
     protected override void Update(GameTime gameTime)
@@ -43,7 +42,8 @@ public class Game1 : Game
             Exit();
 
         // TODO: Add your update logic here
-        hero.Move(gameTime, _graphics);
+        float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        hero.Update(_graphics, elapsed);
 
         base.Update(gameTime);
     }
