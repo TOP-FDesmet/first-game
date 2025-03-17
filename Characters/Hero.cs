@@ -1,9 +1,19 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace FirstGame.Characters;
+
+enum HeroStates
+{
+  Idle,
+  Run,
+  Knocked,
+  Hit,
+  Death
+}
 
 public class Hero
 {
@@ -18,7 +28,7 @@ public class Hero
   private AnimatedTexture animatedTexture;
 
   private SpriteEffects flip;
-  private bool heroMoves;
+  private HeroStates heroState;
   private const int deadZone = 4076;
 
   public Hero(Vector2 position)
@@ -26,7 +36,7 @@ public class Hero
     Position = position;
     frame = 0;
     frameCount = 6;
-    heroMoves = false;
+    heroState = HeroStates.Idle;
     timePerFrame = (float)1 / 8;
     totalElapsed = 0;
   }
@@ -112,6 +122,30 @@ public class Hero
     else if (Position.Y < animatedTexture.Height / 2)
     {
       Position = new Vector2(Position.X, animatedTexture.Height / 2);
+    }
+  }
+
+  private void SwitchState()
+  {
+    switch (heroState)
+    {
+      case HeroStates.Idle:
+        Console.WriteLine("Hero is idle.");
+        break;
+      case HeroStates.Run:
+        Console.WriteLine("Hero run.");
+        break;
+      case HeroStates.Knocked:
+        Console.WriteLine("Hero is knocked.");
+        break;
+      case HeroStates.Hit:
+        Console.WriteLine("Hero Hit.");
+        break;
+      case HeroStates.Death:
+        Console.WriteLine("Hero is dead.");
+        break;
+      default:
+        break;
     }
   }
 }
