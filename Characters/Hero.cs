@@ -29,7 +29,10 @@ public class Hero
 
   private SpriteEffects flip;
   private HeroStates heroState;
+  private HeroStates newHeroState;
   private const int deadZone = 4076;
+
+  private KeyboardState oldKstate;
 
   public Hero(Vector2 position)
   {
@@ -48,8 +51,13 @@ public class Hero
     flip = SpriteEffects.FlipHorizontally;
   }
 
-  public void Update(GraphicsDeviceManager graphics, float elapsed)
+  public void Update(ContentManager content, GraphicsDeviceManager graphics, float elapsed)
   {
+    if (newHeroState != heroState)
+    {
+      SwitchState(content);
+      newHeroState = heroState;
+    }
     animatedTexture.UpdateFrame(elapsed);
     Move(graphics, elapsed);
   }
@@ -64,6 +72,19 @@ public class Hero
     float updateSpeed = speed * elapsed;
 
     var kstate = Keyboard.GetState();
+
+    if (!oldKstate.IsKeyDown(Keys.E))
+    {
+      if (kstate.IsKeyDown(Keys.E))
+      {
+        heroState++;
+        if ((int)heroState >= Enum.GetNames(typeof(HeroStates)).Length)
+        {
+          heroState = 0;
+        }
+      }
+    }
+    oldKstate = kstate;
 
     if (kstate.IsKeyDown(Keys.Up))
     {
@@ -125,24 +146,29 @@ public class Hero
     }
   }
 
-  private void SwitchState()
+  private void SwitchState(ContentManager content)
   {
     switch (heroState)
     {
       case HeroStates.Idle:
         Console.WriteLine("Hero is idle.");
+        animatedTexture.ChangeTexture(content, "Player_idle", 6);
         break;
       case HeroStates.Run:
         Console.WriteLine("Hero run.");
+        animatedTexture.ChangeTexture(content, "Player_run", 8);
         break;
       case HeroStates.Knocked:
         Console.WriteLine("Hero is knocked.");
+        animatedTexture.ChangeTexture(content, "Player_knocked", 6);
         break;
       case HeroStates.Hit:
         Console.WriteLine("Hero Hit.");
+        animatedTexture.ChangeTexture(content, "Player_hit", 3);
         break;
       case HeroStates.Death:
         Console.WriteLine("Hero is dead.");
+        animatedTexture.ChangeTexture(content, "Player_death", 8);
         break;
       default:
         break;

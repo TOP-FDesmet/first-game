@@ -53,4 +53,10 @@ public class AnimatedTexture : IAnimatedTexture
           spriteEffects,
           0.0f);
   }
+
+  public void ChangeTexture(ContentManager content, string newAsset, int newFrameCount)
+  {
+    Texture = content.Load<Texture2D>(newAsset);
+    frameCount = newFrameCount;
+  }
 }
