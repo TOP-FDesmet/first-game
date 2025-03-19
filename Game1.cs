@@ -43,7 +43,7 @@ public class Game1 : Game
 
         // TODO: Add your update logic here
         float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        hero.Update(_graphics, elapsed);
+        hero.Update(Content, _graphics, elapsed);
 
         base.Update(gameTime);
     }
