@@ -84,7 +84,7 @@ public class Hero
         heroState++;
         if ((int)heroState >= Enum.GetNames(typeof(HeroStates)).Length)
         {
-          heroState = 0;
+          heroState = HeroStates.Idle;
         }
       }
     }
