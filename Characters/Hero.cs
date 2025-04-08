@@ -81,11 +81,7 @@ public class Hero
     {
       if (kstate.IsKeyDown(Keys.E))
       {
-        heroState++;
-        if ((int)heroState >= Enum.GetNames(typeof(HeroStates)).Length)
-        {
-          heroState = HeroStates.Idle;
-        }
+        Console.WriteLine("E is pressed !");
       }
     }
     oldKstate = kstate;
