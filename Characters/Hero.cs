@@ -174,23 +174,18 @@ public class Hero
     switch (heroState)
     {
       case HeroStates.Idle:
-        Console.WriteLine("Hero is idle.");
         animatedTexture.ChangeTexture(content, "Player_idle", 6);
         break;
       case HeroStates.Run:
-        Console.WriteLine("Hero run.");
         animatedTexture.ChangeTexture(content, "Player_run", 8);
         break;
       case HeroStates.Knocked:
-        Console.WriteLine("Hero is knocked.");
         animatedTexture.ChangeTexture(content, "Player_knocked", 6);
         break;
       case HeroStates.Hit:
-        Console.WriteLine("Hero Hit.");
         animatedTexture.ChangeTexture(content, "Player_hit", 3);
         break;
       case HeroStates.Death:
-        Console.WriteLine("Hero is dead.");
         animatedTexture.ChangeTexture(content, "Player_death", 8);
         break;
       default:

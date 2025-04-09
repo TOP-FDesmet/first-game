@@ -13,20 +13,22 @@ public class Game1 : Game
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
-    private Dictionary<Vector2, int> tilemap;
-    private List<Rectangle> textureStore;
+    private Dictionary<Vector2, int> ground;
+    private Dictionary<Vector2, int> wall;
+    private Dictionary<Vector2, int> collisions;
     private Texture2D textureAtlas;
+
+    private Vector2 camera;
 
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
-        tilemap = LoadMap("Data/map.csv");
-        textureStore = new() {
-            new Rectangle(0,32,32,32),
-            new Rectangle(32,64,32,32)
-        };
+        ground = LoadMap("Data/level1_ground_1.csv");
+        wall = LoadMap("Data/level1_wall_1.csv");
+        collisions = LoadMap("Data/level1_collisions.csv");
+        camera = Vector2.Zero;
     }
 
     private Dictionary<Vector2, int> LoadMap(string filepath)
@@ -86,6 +88,26 @@ public class Game1 : Game
         float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
         hero.Update(Content, _graphics, elapsed);
 
+        if (Keyboard.GetState().IsKeyDown(Keys.Right))
+        {
+            camera.X -= 5;
+        }
+
+        if (Keyboard.GetState().IsKeyDown(Keys.Left))
+        {
+            camera.X += 5;
+        }
+
+        if (Keyboard.GetState().IsKeyDown(Keys.Up))
+        {
+            camera.Y += 5;
+        }
+
+        if (Keyboard.GetState().IsKeyDown(Keys.Down))
+        {
+            camera.Y -= 5;
+        }
+
         base.Update(gameTime);
     }
 
@@ -95,19 +117,55 @@ public class Game1 : Game
 
         // TODO: Add your drawing code here
         _spriteBatch.Begin();
-        foreach (var item in tilemap)
+
+        int displayTilesize = 32;
+        int numTilesPerRow = 10;
+        int pixelTilesize = 32;
+
+        foreach (var item in ground)
         {
-            Rectangle dest = new(
-                (int)item.Key.X * 32,
-                (int)item.Key.Y * 32,
-                32,
-                32
+            Rectangle drect = new(
+                (int)item.Key.X * displayTilesize + (int)camera.X,
+                (int)item.Key.Y * displayTilesize + (int)camera.Y,
+                displayTilesize,
+                displayTilesize
             );
 
-            Rectangle src = textureStore[item.Value - 1];
+            int x = item.Value % numTilesPerRow;
+            int y = item.Value / numTilesPerRow;
 
-            _spriteBatch.Draw(textureAtlas, dest, src, Color.White);
+            Rectangle src = new(
+                x * pixelTilesize,
+                y * pixelTilesize,
+                pixelTilesize,
+                pixelTilesize
+            );
+
+            _spriteBatch.Draw(textureAtlas, drect, src, Color.White);
         }
+
+        foreach (var item in wall)
+        {
+            Rectangle drect = new(
+                (int)item.Key.X * displayTilesize + (int)camera.X,
+                (int)item.Key.Y * displayTilesize + (int)camera.Y,
+                displayTilesize,
+                displayTilesize
+            );
+
+            int x = item.Value % numTilesPerRow;
+            int y = item.Value / numTilesPerRow;
+
+            Rectangle src = new(
+                x * pixelTilesize,
+                y * pixelTilesize,
+                pixelTilesize,
+                pixelTilesize
+            );
+
+            _spriteBatch.Draw(textureAtlas, drect, src, Color.White);
+        }
+
         hero.Draw(_spriteBatch);
         _spriteBatch.End();
 
