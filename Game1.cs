@@ -17,6 +17,7 @@ public class Game1 : Game
     private Dictionary<Vector2, int> wall;
     private Dictionary<Vector2, int> collisions;
     private Texture2D textureAtlas;
+    private Texture2D textureCollisions;
 
     private Vector2 camera;
 
@@ -47,7 +48,7 @@ public class Game1 : Game
             {
                 if (int.TryParse(items[x], out int value))
                 {
-                    if (value > 0)
+                    if (value > -1)
                     {
                         result[new Vector2(x, y)] = value;
                     }
@@ -76,6 +77,7 @@ public class Game1 : Game
 
         // TODO: use this.Content to load your game content here
         textureAtlas = Content.Load<Texture2D>("atlas");
+        textureCollisions = Content.Load<Texture2D>("HitBox");
         hero.Load(Content);
     }
 
@@ -164,6 +166,28 @@ public class Game1 : Game
             );
 
             _spriteBatch.Draw(textureAtlas, drect, src, Color.White);
+        }
+
+        foreach (var item in collisions)
+        {
+            Rectangle drect = new(
+                (int)item.Key.X * displayTilesize + (int)camera.X,
+                (int)item.Key.Y * displayTilesize + (int)camera.Y,
+                displayTilesize,
+                displayTilesize
+            );
+
+            int x = item.Value % numTilesPerRow;
+            int y = item.Value / numTilesPerRow;
+
+            Rectangle src = new(
+                x * pixelTilesize,
+                y * pixelTilesize,
+                pixelTilesize,
+                pixelTilesize
+            );
+
+            _spriteBatch.Draw(textureCollisions, drect, src, Color.White);
         }
 
         hero.Draw(_spriteBatch);
