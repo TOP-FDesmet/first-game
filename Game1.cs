@@ -9,7 +9,7 @@ namespace FirstGame;
 
 public class Game1 : Game
 {
-    private Hero hero;
+    private Texture2D player;
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
@@ -64,9 +64,6 @@ public class Game1 : Game
     protected override void Initialize()
     {
         // TODO: Add your initialization logic here
-        hero = new(new Vector2(
-            _graphics.PreferredBackBufferWidth / 2,
-            _graphics.PreferredBackBufferHeight / 2));
 
         base.Initialize();
     }
@@ -76,9 +73,9 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         // TODO: use this.Content to load your game content here
+        player = Content.Load<Texture2D>("Hero");
         textureAtlas = Content.Load<Texture2D>("atlas");
         textureCollisions = Content.Load<Texture2D>("HitBox");
-        hero.Load(Content);
     }
 
     protected override void Update(GameTime gameTime)
@@ -87,8 +84,6 @@ public class Game1 : Game
             Exit();
 
         // TODO: Add your update logic here
-        float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        hero.Update(Content, _graphics, elapsed);
 
         if (Keyboard.GetState().IsKeyDown(Keys.Right))
         {
@@ -118,9 +113,9 @@ public class Game1 : Game
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
         // TODO: Add your drawing code here
-        _spriteBatch.Begin();
+        _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-        int displayTilesize = 32;
+        int displayTilesize = 64;
         int numTilesPerRow = 10;
         int pixelTilesize = 32;
 
@@ -189,8 +184,7 @@ public class Game1 : Game
 
             _spriteBatch.Draw(textureCollisions, drect, src, Color.White);
         }
-
-        hero.Draw(_spriteBatch);
+        _spriteBatch.Draw(player, new Rectangle(100, 100, 64, 64), Color.White);
         _spriteBatch.End();
 
         base.Draw(gameTime);
