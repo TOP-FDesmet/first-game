@@ -2,6 +2,7 @@
 using System.IO;
 using FirstGame.Characters;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -9,7 +10,7 @@ namespace FirstGame;
 
 public class Game1 : Game
 {
-    private Hero hero;
+    private Player player;
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
@@ -64,9 +65,6 @@ public class Game1 : Game
     protected override void Initialize()
     {
         // TODO: Add your initialization logic here
-        hero = new(new Vector2(
-            _graphics.PreferredBackBufferWidth / 2,
-            _graphics.PreferredBackBufferHeight / 2));
 
         base.Initialize();
     }
@@ -76,9 +74,10 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         // TODO: use this.Content to load your game content here
+        Texture2D texture = Content.Load<Texture2D>("Hero");
+        player = new(texture, Vector2.Zero);
         textureAtlas = Content.Load<Texture2D>("atlas");
         textureCollisions = Content.Load<Texture2D>("HitBox");
-        hero.Load(Content);
     }
 
     protected override void Update(GameTime gameTime)
@@ -87,10 +86,9 @@ public class Game1 : Game
             Exit();
 
         // TODO: Add your update logic here
-        float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        hero.Update(Content, _graphics, elapsed);
+        player.Update(gameTime);
 
-        if (Keyboard.GetState().IsKeyDown(Keys.Right))
+        /* if (Keyboard.GetState().IsKeyDown(Keys.Right))
         {
             camera.X -= 5;
         }
@@ -108,7 +106,7 @@ public class Game1 : Game
         if (Keyboard.GetState().IsKeyDown(Keys.Down))
         {
             camera.Y -= 5;
-        }
+        } */
 
         base.Update(gameTime);
     }
@@ -118,9 +116,9 @@ public class Game1 : Game
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
         // TODO: Add your drawing code here
-        _spriteBatch.Begin();
+        _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-        int displayTilesize = 32;
+        int displayTilesize = 64;
         int numTilesPerRow = 10;
         int pixelTilesize = 32;
 
@@ -190,7 +188,8 @@ public class Game1 : Game
             _spriteBatch.Draw(textureCollisions, drect, src, Color.White);
         }
 
-        hero.Draw(_spriteBatch);
+        player.Draw(_spriteBatch);
+
         _spriteBatch.End();
 
         base.Draw(gameTime);
