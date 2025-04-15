@@ -2,6 +2,7 @@
 using System.IO;
 using FirstGame.Characters;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -9,7 +10,7 @@ namespace FirstGame;
 
 public class Game1 : Game
 {
-    private Texture2D player;
+    private ScaledSprite player;
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
@@ -73,7 +74,8 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         // TODO: use this.Content to load your game content here
-        player = Content.Load<Texture2D>("Hero");
+        Texture2D texture = Content.Load<Texture2D>("Hero");
+        player = new(texture, Vector2.Zero);
         textureAtlas = Content.Load<Texture2D>("atlas");
         textureCollisions = Content.Load<Texture2D>("HitBox");
     }
@@ -184,7 +186,7 @@ public class Game1 : Game
 
             _spriteBatch.Draw(textureCollisions, drect, src, Color.White);
         }
-        _spriteBatch.Draw(player, new Rectangle(100, 100, 64, 64), Color.White);
+        _spriteBatch.Draw(player.texture, player.Rect, Color.White);
         _spriteBatch.End();
 
         base.Draw(gameTime);
