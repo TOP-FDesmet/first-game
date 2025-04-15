@@ -10,7 +10,7 @@ namespace FirstGame;
 
 public class Game1 : Game
 {
-    private ScaledSprite player;
+    private Player player;
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
@@ -86,8 +86,9 @@ public class Game1 : Game
             Exit();
 
         // TODO: Add your update logic here
+        player.Update(gameTime);
 
-        if (Keyboard.GetState().IsKeyDown(Keys.Right))
+        /* if (Keyboard.GetState().IsKeyDown(Keys.Right))
         {
             camera.X -= 5;
         }
@@ -105,7 +106,7 @@ public class Game1 : Game
         if (Keyboard.GetState().IsKeyDown(Keys.Down))
         {
             camera.Y -= 5;
-        }
+        } */
 
         base.Update(gameTime);
     }
@@ -186,7 +187,9 @@ public class Game1 : Game
 
             _spriteBatch.Draw(textureCollisions, drect, src, Color.White);
         }
-        _spriteBatch.Draw(player.texture, player.Rect, Color.White);
+
+        player.Draw(_spriteBatch);
+
         _spriteBatch.End();
 
         base.Draw(gameTime);
