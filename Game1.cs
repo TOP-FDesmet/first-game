@@ -11,6 +11,7 @@ namespace FirstGame;
 public class Game1 : Game
 {
     private Player player;
+    private List<Sprite> sprites;
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
@@ -75,7 +76,15 @@ public class Game1 : Game
 
         // TODO: use this.Content to load your game content here
         Texture2D texture = Content.Load<Texture2D>("Hero");
+        Texture2D textureZombie = Content.Load<Texture2D>("Zombie");
+
         player = new(texture, Vector2.Zero);
+        sprites = [];
+        sprites.Add(new Sprite(textureZombie, new Vector2(100, 100)));
+        sprites.Add(new Sprite(textureZombie, new Vector2(200, 150)));
+        sprites.Add(new Sprite(textureZombie, new Vector2(300, 50)));
+        sprites.Add(player);
+
         textureAtlas = Content.Load<Texture2D>("atlas");
         textureCollisions = Content.Load<Texture2D>("HitBox");
     }
@@ -86,7 +95,10 @@ public class Game1 : Game
             Exit();
 
         // TODO: Add your update logic here
-        player.Update(gameTime);
+        foreach (var sprite in sprites)
+        {
+            sprite.Update(gameTime);
+        }
 
         /* if (Keyboard.GetState().IsKeyDown(Keys.Right))
         {
@@ -144,7 +156,7 @@ public class Game1 : Game
             _spriteBatch.Draw(textureAtlas, drect, src, Color.White);
         }
 
-        foreach (var item in wall)
+        /* foreach (var item in wall)
         {
             Rectangle drect = new(
                 (int)item.Key.X * displayTilesize + (int)camera.X,
@@ -164,9 +176,9 @@ public class Game1 : Game
             );
 
             _spriteBatch.Draw(textureAtlas, drect, src, Color.White);
-        }
+        } */
 
-        foreach (var item in collisions)
+        /* foreach (var item in collisions)
         {
             Rectangle drect = new(
                 (int)item.Key.X * displayTilesize + (int)camera.X,
@@ -186,9 +198,12 @@ public class Game1 : Game
             );
 
             _spriteBatch.Draw(textureCollisions, drect, src, Color.White);
-        }
+        } */
 
-        player.Draw(_spriteBatch);
+        foreach (var sprite in sprites)
+        {
+            sprite.Draw(_spriteBatch);
+        }
 
         _spriteBatch.End();
 
