@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace FirstGame.Characters;
+namespace FirstGame.Sprites;
 
 enum HeroStates
 {
@@ -20,10 +21,11 @@ public class Player : Sprite
 {
   private float SPEED = 200.0f;
   private KeyboardState oldKstate;
+  private List<Sprite> collisionGroup;
 
-  public Player(Texture2D texture, Vector2 position) : base(texture, position)
+  public Player(Texture2D texture, Vector2 position, List<Sprite> collisionGroup) : base(texture, position)
   {
-
+    this.collisionGroup = collisionGroup;
   }
 
   public override void Update(GameTime gameTime)
@@ -44,24 +46,38 @@ public class Player : Sprite
 
     oldKstate = kstate;
 
-    if (kstate.IsKeyDown(Keys.Up))
-    {
-      position.Y -= SPEED * elapsed;
-    }
-
-    if (kstate.IsKeyDown(Keys.Down))
-    {
-      position.Y += SPEED * elapsed;
-    }
+    float changeX = 0;
+    float changeY = 0;
 
     if (kstate.IsKeyDown(Keys.Left))
     {
-      position.X -= SPEED * elapsed;
+      changeX -= SPEED * elapsed;
     }
 
     if (kstate.IsKeyDown(Keys.Right))
     {
-      position.X += SPEED * elapsed;
+      changeX += SPEED * elapsed;
+    }
+    position.X += changeX;
+
+    if (kstate.IsKeyDown(Keys.Up))
+    {
+      changeY -= SPEED * elapsed;
+    }
+
+    if (kstate.IsKeyDown(Keys.Down))
+    {
+      changeY += SPEED * elapsed;
+    }
+    position.Y += changeY;
+
+    foreach (var sprite in collisionGroup)
+    {
+      if (sprite != this && sprite.Rect.Intersects(Rect))
+      {
+        position.X -= changeX;
+        position.Y -= changeY;
+      }
     }
   }
 }

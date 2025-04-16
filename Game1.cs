@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using FirstGame.Characters;
+using FirstGame.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -78,11 +78,14 @@ public class Game1 : Game
         Texture2D texture = Content.Load<Texture2D>("Hero");
         Texture2D textureZombie = Content.Load<Texture2D>("Zombie");
 
-        player = new(texture, Vector2.Zero);
         sprites = [];
+
         sprites.Add(new Sprite(textureZombie, new Vector2(100, 100)));
         sprites.Add(new Sprite(textureZombie, new Vector2(200, 150)));
         sprites.Add(new Sprite(textureZombie, new Vector2(300, 50)));
+
+        player = new(texture, Vector2.Zero, sprites);
+
         sprites.Add(player);
 
         textureAtlas = Content.Load<Texture2D>("atlas");
