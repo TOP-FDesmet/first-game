@@ -23,14 +23,19 @@ public class Player : Sprite
   private KeyboardState oldKstate;
   private List<Sprite> collisionGroup;
 
+  private AnimationManager animationManager;
+
   public Player(Texture2D texture, Vector2 position, List<Sprite> collisionGroup) : base(texture, position)
   {
     this.collisionGroup = collisionGroup;
+    animationManager = new(6, 6, new Vector2(32, 32));
   }
 
   public override void Update(GameTime gameTime)
   {
     base.Update(gameTime);
+
+    animationManager.Update();
 
     float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -79,5 +84,10 @@ public class Player : Sprite
         position.Y -= changeY;
       }
     }
+  }
+
+  public override void Draw(SpriteBatch spriteBatch)
+  {
+    spriteBatch.Draw(texture, Rect, animationManager.GetFrame(), Color.White);
   }
 }

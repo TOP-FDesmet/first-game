@@ -6,6 +6,7 @@ namespace FirstGame;
 public class Sprite
 {
   private float SCALE = 2.0f;
+  private int SIZE = 32;
   public Texture2D texture;
   public Vector2 position;
 
@@ -13,7 +14,7 @@ public class Sprite
   {
     get
     {
-      return new Rectangle((int)position.X, (int)position.Y, texture.Width * (int)SCALE, texture.Height * (int)SCALE);
+      return new Rectangle((int)position.X, (int)position.Y, SIZE * (int)SCALE, SIZE * (int)SCALE);
     }
   }
 

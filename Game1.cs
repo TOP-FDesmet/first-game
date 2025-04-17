@@ -11,7 +11,7 @@ namespace FirstGame;
 public class Game1 : Game
 {
     private Player player;
-    private List<Sprite> sprites;
+    private List<Sprite> zombies;
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
@@ -26,6 +26,11 @@ public class Game1 : Game
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
+
+        _graphics.PreferredBackBufferWidth = 1280;
+        _graphics.PreferredBackBufferHeight = 720;
+        _graphics.ApplyChanges();
+
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
         ground = LoadMap("Data/level1_ground_1.csv");
@@ -75,18 +80,15 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         // TODO: use this.Content to load your game content here
-        Texture2D texture = Content.Load<Texture2D>("Hero");
-        Texture2D textureZombie = Content.Load<Texture2D>("Zombie");
+        Texture2D texture = Content.Load<Texture2D>("Player_idle");
+        Texture2D textureZombie = Content.Load<Texture2D>("Zombie_Idle");
 
-        sprites = [];
+        zombies = [];
+        zombies.Add(new Zombie(textureZombie, new Vector2(200, 400)));
+        zombies.Add(new Zombie(textureZombie, new Vector2(300, 500)));
+        zombies.Add(new Zombie(textureZombie, new Vector2(400, 150)));
 
-        sprites.Add(new Sprite(textureZombie, new Vector2(100, 100)));
-        sprites.Add(new Sprite(textureZombie, new Vector2(200, 150)));
-        sprites.Add(new Sprite(textureZombie, new Vector2(300, 50)));
-
-        player = new(texture, Vector2.Zero, sprites);
-
-        sprites.Add(player);
+        player = new(texture, Vector2.Zero, zombies);
 
         textureAtlas = Content.Load<Texture2D>("atlas");
         textureCollisions = Content.Load<Texture2D>("HitBox");
@@ -98,10 +100,13 @@ public class Game1 : Game
             Exit();
 
         // TODO: Add your update logic here
-        foreach (var sprite in sprites)
+
+        foreach (var zombie in zombies)
         {
-            sprite.Update(gameTime);
+            zombie.Update(gameTime);
         }
+
+        player.Update(gameTime);
 
         /* if (Keyboard.GetState().IsKeyDown(Keys.Right))
         {
@@ -203,10 +208,12 @@ public class Game1 : Game
             _spriteBatch.Draw(textureCollisions, drect, src, Color.White);
         } */
 
-        foreach (var sprite in sprites)
+        foreach (var zombie in zombies)
         {
-            sprite.Draw(_spriteBatch);
+            zombie.Draw(_spriteBatch);
         }
+
+        player.Draw(_spriteBatch);
 
         _spriteBatch.End();
 
