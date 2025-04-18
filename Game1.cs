@@ -11,7 +11,7 @@ namespace FirstGame;
 public class Game1 : Game
 {
     private Player player;
-    private List<Sprite> zombies;
+    private List<AnimatedSprite> animatedSprites;
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
@@ -80,15 +80,22 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         // TODO: use this.Content to load your game content here
-        Texture2D texture = Content.Load<Texture2D>("Player_idle");
-        Texture2D textureZombie = Content.Load<Texture2D>("Zombie_Idle");
+        Texture2D texturePlayer = Content.Load<Texture2D>("Player_run");
 
-        zombies = [];
-        zombies.Add(new Zombie(textureZombie, new Vector2(200, 400)));
-        zombies.Add(new Zombie(textureZombie, new Vector2(300, 500)));
-        zombies.Add(new Zombie(textureZombie, new Vector2(400, 150)));
+        Texture2D textureZombie = Content.Load<Texture2D>("Zombie_run");
 
-        player = new(texture, Vector2.Zero, zombies);
+        animatedSprites = [];
+        animatedSprites.Add(new Zombie(textureZombie, new Vector2(200, 400)));
+        animatedSprites.Add(new Zombie(textureZombie, new Vector2(300, 500)));
+        animatedSprites.Add(new Zombie(textureZombie, new Vector2(400, 150)));
+
+        player = new(
+            texturePlayer,
+            new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2),
+            animatedSprites
+        );
+
+        animatedSprites.Add(player);
 
         textureAtlas = Content.Load<Texture2D>("atlas");
         textureCollisions = Content.Load<Texture2D>("HitBox");
@@ -101,12 +108,10 @@ public class Game1 : Game
 
         // TODO: Add your update logic here
 
-        foreach (var zombie in zombies)
+        foreach (var animatedSprite in animatedSprites)
         {
-            zombie.Update(gameTime);
+            animatedSprite.Update(gameTime);
         }
-
-        player.Update(gameTime);
 
         /* if (Keyboard.GetState().IsKeyDown(Keys.Right))
         {
@@ -208,12 +213,10 @@ public class Game1 : Game
             _spriteBatch.Draw(textureCollisions, drect, src, Color.White);
         } */
 
-        foreach (var zombie in zombies)
+        foreach (var animatedSprite in animatedSprites)
         {
-            zombie.Draw(_spriteBatch);
+            animatedSprite.Draw(_spriteBatch);
         }
-
-        player.Draw(_spriteBatch);
 
         _spriteBatch.End();
 

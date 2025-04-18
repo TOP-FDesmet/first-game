@@ -6,7 +6,7 @@ namespace FirstGame;
 public class Sprite
 {
   private float SCALE = 2.0f;
-  private int SIZE = 32;
+  protected int SIZE = 32;
   public Texture2D texture;
   public Vector2 position;
 

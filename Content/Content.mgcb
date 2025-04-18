@@ -121,7 +121,7 @@
 /processorParam:TextureFormat=Color
 /build:Zombie_Death 1.png
 
-#begin Zombie_Death 2 .png
+#begin Zombie_Death 2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -131,7 +131,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Zombie_Death 2 .png
+/build:Zombie_Death 2.png
 
 #begin Zombie_Hit.png
 /importer:TextureImporter
@@ -157,7 +157,7 @@
 /processorParam:TextureFormat=Color
 /build:Zombie_Idle.png
 
-#begin Zombie_knocked .png
+#begin Zombie_knocked.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -167,7 +167,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Zombie_knocked .png
+/build:Zombie_knocked.png
 
 #begin Zombie_run.png
 /importer:TextureImporter
